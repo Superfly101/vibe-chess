@@ -17,11 +17,10 @@ interface GameStatus {
 }
 
 const ChessGame: React.FC = () => {
-  // Use ref to persist game state across renders
   const gameRef = useRef(new Chess());
   const game = gameRef.current;
   
-  // Track position to trigger re-renders
+
   const [gamePosition, setGamePosition] = useState(game.fen());
   const [capturedPieces, setCapturedPieces] = useState<{
     white: CapturedPiece[];
@@ -134,21 +133,18 @@ const ChessGame: React.FC = () => {
     const { square, piece } = args;
     setRightClickedSquares({});
 
-    // If no piece is selected, try to select the clicked square
     if (!moveFrom && piece) {
       const hasMoveOptions = getMoveOptions(square);
       if (hasMoveOptions) setMoveFrom(square);
       return;
     }
 
-    // If the same square is clicked again, deselect
     if (moveFrom === square) {
       setMoveFrom('');
       setOptionSquares({});
       return;
     }
 
-    // Check if it's a valid move
     const moves = game.moves({
       square: moveFrom as any,
       verbose: true,
@@ -156,13 +152,12 @@ const ChessGame: React.FC = () => {
     const foundMove = moves.find((m: any) => m.from === moveFrom && m.to === square);
 
     if (!foundMove) {
-      // Check if clicked on new piece
+
       const hasMoveOptions = getMoveOptions(square);
       setMoveFrom(hasMoveOptions ? square : '');
       return;
     }
 
-    // Make the move
     const moveData = {
       from: moveFrom,
       to: square,
@@ -281,7 +276,6 @@ const ChessGame: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Captured Pieces - Black */}
           <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
             <h3 className="text-white font-semibold mb-3 text-center">Black Captures</h3>
             <div className="min-h-[60px] flex items-center justify-center">
@@ -289,14 +283,12 @@ const ChessGame: React.FC = () => {
             </div>
           </div>
 
-          {/* Chess Board */}
           <div className="flex justify-center">
             <div className="w-full max-w-[500px] bg-white/5 backdrop-blur-sm rounded-lg p-4">
               <Chessboard options={chessboardOptions} />
             </div>
           </div>
 
-          {/* Captured Pieces - White */}
           <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
             <h3 className="text-white font-semibold mb-3 text-center">White Captures</h3>
             <div className="min-h-[60px] flex items-center justify-center">
@@ -304,8 +296,6 @@ const ChessGame: React.FC = () => {
             </div>
           </div>
         </div>
-
-        {/* Game Controls */}
         <div className="mt-6 text-center">
           <button
             onClick={resetGame}
@@ -314,8 +304,6 @@ const ChessGame: React.FC = () => {
             New Game
           </button>
         </div>
-
-        {/* Move History */}
         {moveHistory.length > 0 && (
           <div className="mt-6 bg-white/10 backdrop-blur-sm rounded-lg p-4">
             <h3 className="text-white font-semibold mb-3">Move History</h3>
@@ -333,8 +321,6 @@ const ChessGame: React.FC = () => {
             </div>
           </div>
         )}
-
-        {/* Instructions */}
         <div className="mt-6 bg-white/10 backdrop-blur-sm rounded-lg p-4">
           <h3 className="text-white font-semibold mb-3">How to Play</h3>
           <div className="text-gray-300 text-sm space-y-2">
